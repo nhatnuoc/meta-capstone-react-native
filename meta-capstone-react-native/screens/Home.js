@@ -1,4 +1,10 @@
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Image, SectionList, StyleSheet, Text, TouchableOpacity, View } from "react-native"
+import { useUpdateEffect, getSectionListData } from "../utils/utils";
+import debounce from 'lodash.debounce';
+import { Searchbar } from 'react-native-paper';
+import { Alert } from "react-native";
+import { createTable, getMenuItems, filterByQueryAndCategories, saveMenuItems } from '../utils/database';
 
 const styles = StyleSheet.create({
     heroView: {
@@ -70,8 +76,12 @@ const Filters = ({ onChange, selections, sections }) => {
 
 const Item = ({ title, price }) => (
     <View style={styles.item}>
-        <Text style={styles.title}>{title}</Text>
-        <Text style={styles.title}>${price}</Text>
+        {/* <Text style={styles.title}>{title}</Text>
+        <Text style={styles.title}>${price}</Text> */}
+        <View>
+
+        </View>
+        <Image source={{uri: ''}}/>
     </View>
 );
 const sections = ['Appetizers', 'Salads', 'Beverages'];
@@ -153,8 +163,8 @@ export default HomeScreen = () => {
         const debouncedLookup = useMemo(() => debounce(lookup, 500), [lookup]);
 
         const handleSearchChange = (text) => {
-        setSearchBarText(text);
-        debouncedLookup(text);
+            setSearchBarText(text);
+            debouncedLookup(text);
         };
     const handleFiltersChange = async (index) => {
         const arrayCopy = [...filterSelections];
@@ -173,7 +183,7 @@ export default HomeScreen = () => {
                 <Image source={require('../assets/Hero_image.png')} style={styles.heroViewImage}/>
             </View>
         </View>
-        {/* <Searchbar
+        <Searchbar
             placeholder="Search"
             placeholderTextColor="white"
             onChangeText={handleSearchChange}
@@ -182,7 +192,7 @@ export default HomeScreen = () => {
             iconColor="white"
             inputStyle={{ color: 'white' }}
             elevation={0}
-        /> */}
+        />
         <Filters
             selections={filterSelections}
             onChange={handleFiltersChange}
