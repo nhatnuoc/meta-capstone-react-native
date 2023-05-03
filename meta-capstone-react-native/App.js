@@ -2,12 +2,13 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { StatusBar } from 'expo-status-bar';
 import { createContext, useEffect, useMemo, useReducer, useState } from 'react';
-import { Image, StyleSheet, Text, View } from 'react-native';
+import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Profile from './screens/Profile';
 import Onboarding, { AuthContext } from './screens/Onboarding';
 import Home from './screens/Home';
 import { useFonts } from 'expo-font';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Button, IconButton } from 'react-native-paper';
 
 const Stack = createNativeStackNavigator();
 
@@ -16,7 +17,6 @@ export default function App() {
     'Karla': require('./assets/Karla-Regular.ttf'),
     'MarkaziText': require('./assets/MarkaziText-Regular.ttf')
   });
-  const [isOnboardingCompleted, setIsOnboardingCompleted] = useState(false);
   const [state, dispatch] = useReducer(
     (prevState, action) => {
       switch (action.type) {
@@ -76,7 +76,12 @@ export default function App() {
             state.isOnboardingCompleted ?
             (
             <>
-            <Stack.Screen name='Home' component={Home}/>
+            <Stack.Screen name='Home' component={Home} options={({ navigation }) => ({
+              headerTitle: (props) => <Image source={require('./assets/Logo.png')}/>,
+              headerRight: (props) => <Button children={<Image source={require('./assets/Profile.png')} style={{width: 35, height: 35}}/>} onPress={() => {
+                navigation.navigate('Profile');
+              }}/>
+            })}/>
             <Stack.Screen name='Profile' component={Profile}/>
             </>
             )

@@ -8,7 +8,7 @@ export async function createTable() {
     db.transaction(
       (tx) => {
         tx.executeSql(
-          'create table if not exists menuitems (id integer primary key not null, uuid text, title text, price text, category text);'
+          'create table if not exists menuitems (name text primary key, price text, description text, image text, category text);'
         );
       },
       reject,
@@ -35,8 +35,8 @@ export async function saveMenuItems(menuItems) {
       // 2. Implement a single SQL statement to save all menu data in a table called menuitems.
       // Check the createTable() function above to see all the different columns the table has
       // Hint: You need a SQL statement to insert multiple rows at once.
-      let sqlStatement = `INSERT INTO menuitems (id,title,price,category) VALUES ${menuItems.map((value) => "(?,?,?,?)").join(",")}`;
-      tx.executeSql(sqlStatement, menuItems.flatMap((value) => [value.id, value.title, value.price, value.category]), (tx, results) => {
+      let sqlStatement = `INSERT INTO menuitems (name,price,description,image,category) VALUES ${menuItems.map((value) => "(?,?,?,?,?)").join(",")}`;
+      tx.executeSql(sqlStatement, menuItems.flatMap((value) => [value.name, value.price, value.description, value.image, value.category]), (tx, results) => {
         if (results.rowsAffected > 0 ) {
           console.log('Insert success');              
           resolve();
@@ -70,9 +70,8 @@ export async function saveMenuItems(menuItems) {
  */
 export async function filterByQueryAndCategories(query, activeCategories) {
   return new Promise((resolve) => {
-    // resolve(SECTION_LIST_MOCK_DATA);
     db.transaction((tx) => {
-      let sqlStatement = `SELECT * FROM menuitems WHERE category IN (${activeCategories.map(e => `'${e}'`).join(",")}) AND title LIKE '%${query}%';`;
+      let sqlStatement = `SELECT * FROM menuitems WHERE category IN (${activeCategories.map(e => `'${e}'`).join(",")}) AND name LIKE '%${query}%';`;
       console.log(sqlStatement);
       tx.executeSql(sqlStatement, [], (tx, results) => {
         resolve(results.rows._array);
