@@ -19,8 +19,7 @@ const styles = StyleSheet.create({
     }
   });
 
-export default InputForm = (props) => {
-    const { title, style, onChangeText, text } = props;
+export default InputForm = ({ title, style, onChangeText, text }) => {
     let [name, onChangeName] = useState("");
     return <View style={[styles.container, style]}>
         <Text style={styles.title}>{title}</Text>

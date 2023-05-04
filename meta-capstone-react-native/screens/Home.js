@@ -214,32 +214,34 @@ export default HomeScreen = () => {
         setFilterSelections(arrayCopy);
       };
     return <View style={{flex: 1}}>
-        <View style={styles.heroView}>
-            <Text style={styles.heroViewHeadingName}>Little Lemon</Text>
-            <View style={styles.heroViewContent}>
-                <View style={styles.heroViewHeading}>
-                    <Text style={styles.heroViewSubHeading}>Chicago</Text>
-                    <Text style={styles.heroViewAbout}>We are a family owned Mediterranean restaurant, focused on traditional recipes served with a modern twist.</Text>
-                </View>
-                <Image source={require('../assets/Hero_image.png')} style={styles.heroViewImage}/>
-            </View>
-        </View>
-        <Searchbar
-            placeholder="Search"
-            placeholderTextColor="black"
-            onChangeText={handleSearchChange}
-            value={searchBarText}
-            style={styles.searchBar}
-            iconColor="black"
-            inputStyle={{ color: 'black' }}
-            elevation={0}
-        />
-        <Filters
-            sections={sections}
-            selections={filterSelections}
-            onChange={handleFiltersChange}
-        />
         <FlatList 
+            ListHeaderComponent={(<View>
+                <View style={styles.heroView}>
+                    <Text style={styles.heroViewHeadingName}>Little Lemon</Text>
+                    <View style={styles.heroViewContent}>
+                        <View style={styles.heroViewHeading}>
+                            <Text style={styles.heroViewSubHeading}>Chicago</Text>
+                            <Text style={styles.heroViewAbout}>We are a family owned Mediterranean restaurant, focused on traditional recipes served with a modern twist.</Text>
+                        </View>
+                        <Image source={require('../assets/Hero_image.png')} style={styles.heroViewImage}/>
+                    </View>
+                </View>
+                <Searchbar
+                    placeholder="Search"
+                    placeholderTextColor="black"
+                    onChangeText={handleSearchChange}
+                    value={searchBarText}
+                    style={styles.searchBar}
+                    iconColor="black"
+                    inputStyle={{ color: 'black' }}
+                    elevation={0}
+                />
+                <Filters
+                    sections={sections}
+                    selections={filterSelections}
+                    onChange={handleFiltersChange}
+                />
+            </View>)}
             data={data}
             renderItem={({ item }) => (
                 <Item price={item.price} description={item.description} image={item.image} name={item.name}/>

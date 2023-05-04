@@ -82,7 +82,10 @@ export default function App() {
                 navigation.navigate('Profile');
               }}/>
             })}/>
-            <Stack.Screen name='Profile' component={Profile}/>
+            <Stack.Screen name='Profile' component={Profile} options={({ navigation }) => ({
+              headerTitle: (props) => <Image source={require('./assets/Logo.png')}/>,
+              headerRight: (props) => <Image source={require('./assets/Profile.png')} style={{width: 35, height: 35}}/>,
+            })}/>
             </>
             )
             :
