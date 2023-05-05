@@ -1,14 +1,14 @@
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { StatusBar } from 'expo-status-bar';
-import { createContext, useEffect, useMemo, useReducer, useState } from 'react';
-import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { useEffect, useMemo, useReducer } from 'react';
+import { Image, StyleSheet } from 'react-native';
 import Profile from './screens/Profile';
 import Onboarding, { AuthContext } from './screens/Onboarding';
 import Home from './screens/Home';
 import { useFonts } from 'expo-font';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Button, IconButton } from 'react-native-paper';
+import { Button } from 'react-native-paper';
+import UserAvatar from './screens/Avatar';
 
 const Stack = createNativeStackNavigator();
 
@@ -56,9 +56,18 @@ export default function App() {
       // After getting token, we need to persist the token using `SecureStore`
       // In the example, we'll use a dummy token
       // await AsyncStorage.setItem('isOnboardingCompleted', true);
-      await AsyncStorage.setItem('name', name);
-      await AsyncStorage.setItem('email', email);
+      await AsyncStorage.multiSet([
+        ['name', name],
+        ['email', email],
+        ['orderStatusesChecked', true],
+        ['passwordChangedChecked', true],
+        ['specialOffersChecked', true],
+        ['newsletterChecked', true]
+      ])
       dispatch({ type: 'SIGN_IN', name, email });
+    },
+    saveProfile: {
+      
     },
     signOut: async () => {
       await AsyncStorage.clear();
@@ -84,7 +93,7 @@ export default function App() {
             })}/>
             <Stack.Screen name='Profile' component={Profile} options={({ navigation }) => ({
               headerTitle: (props) => <Image source={require('./assets/Logo.png')}/>,
-              headerRight: (props) => <Image source={require('./assets/Profile.png')} style={{width: 35, height: 35}}/>,
+              headerRight: (props) => <UserAvatar size={35}/>,
             })}/>
             </>
             )
