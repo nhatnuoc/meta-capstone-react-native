@@ -87,7 +87,7 @@ export default function App() {
             <>
             <Stack.Screen name='Home' component={Home} options={({ navigation }) => ({
               headerTitle: (props) => <Image source={require('./assets/Logo.png')}/>,
-              headerRight: (props) => <Button children={<Image source={require('./assets/Profile.png')} style={{width: 35, height: 35}}/>} onPress={() => {
+              headerRight: (props) => <Button children={<UserAvatar size={35}/>} onPress={() => {
                 navigation.navigate('Profile');
               }}/>
             })}/>

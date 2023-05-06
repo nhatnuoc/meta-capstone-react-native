@@ -1,4 +1,4 @@
-import { ScrollView, StyleSheet, Text, View } from "react-native"
+import { ActivityIndicator, ScrollView, StyleSheet, Text, View } from "react-native"
 import InputForm from "./InputForm";
 import { Checkbox, Button } from "react-native-paper";
 import { useContext, useEffect, useState } from "react";
@@ -44,12 +44,15 @@ export default ProfileScreen = () => {
     const [lastName, setLastName] = useState("");
     const [email, setEmail] = useState("");
     const [phone, setPhone] = useState("");
-    const [orderStatusesChecked, setOrderStatusesChecked] = useState(true);
-    const [passwordChangedChecked, setPasswordChangedChecked] = useState(true);
-    const [specialOffersChecked, setSpecialOffersChecked] = useState(true);
-    const [newsletterChecked, setNewsletterChecked] = useState(true);
+    const [orderStatusesChecked, setOrderStatusesChecked] = useState(false);
+    const [passwordChangedChecked, setPasswordChangedChecked] = useState(false);
+    const [specialOffersChecked, setSpecialOffersChecked] = useState(false);
+    const [newsletterChecked, setNewsletterChecked] = useState(false);
     const [avatarUri, setAvatarUri] = useState("");
+    const [saveLoading, setSaveLoading] = useState(false);
+    const [profileLoading, setProfileLoading] = useState(false);
     const getProfile = async () => {
+        setProfileLoading(true);
         let profile = await AsyncStorage.multiGet(['avatar', 'name', 'email', 'phone', 'orderStatusesChecked', 'passwordChangedChecked', 'specialOffersChecked', 'newsletterChecked']);
         setAvatarUri(profile[0][1]);
         let name = profile[1][1];
@@ -68,6 +71,7 @@ export default ProfileScreen = () => {
         setSpecialOffersChecked(specialOffersChecked ?? false);
         let newsletterChecked = JSON.parse(profile[7][1]);
         setNewsletterChecked(newsletterChecked ?? false);
+        setProfileLoading(false);
     }
     const changeAvatar = async () => {
         let result = await launchImageLibraryAsync({
@@ -77,7 +81,26 @@ export default ProfileScreen = () => {
         let image = result.assets.at(0).uri;
         setAvatarUri(image);
     }
+    const saveChanges = async () => {
+        setSaveLoading(true);
+        await AsyncStorage.multiSet([
+            ['avatar', avatarUri ?? ""],
+            ['name', `${firstName ?? ""} ${lastName ?? ""}`],
+            ['email', email ?? ""],
+            ['phone', phone ?? ""],
+            ['orderStatusesChecked', JSON.stringify(orderStatusesChecked) ?? 'false'],
+            ['passwordChangedChecked', JSON.stringify(passwordChangedChecked) ?? 'false'], 
+            ['specialOffersChecked', JSON.stringify(specialOffersChecked) ?? 'false'], 
+            ['newsletterChecked', JSON.stringify(newsletterChecked) ?? 'false']
+        ]);
+        setSaveLoading(false);
+    }
     useEffect(getProfile, []);
+    if (profileLoading) {
+        return <View style={[styles.container, { justifyContent: 'center', alignItems: 'center' }]}>
+            <ActivityIndicator animating/>
+        </View>
+    }
     return <ScrollView>
         <View style={styles.container}>
             <Text style={styles.sectionTitle}>Personal Information</Text>
@@ -147,20 +170,8 @@ export default ProfileScreen = () => {
                     Discard changes
                 </Button>
                 <Button mode="elevated" buttonColor="rgb(64, 84, 77)" textColor="white" onPress={() => {
-                    // AsyncStorage.setItem('name', `${firstName} ${lastName}`);
-                    // AsyncStorage.setItem('email', email);
-                    // AsyncStorage.setItem('phone', phone);
-                    AsyncStorage.multiSet([
-                        ['avatar', avatarUri],
-                        ['name', `${firstName ?? ""} ${lastName ?? ""}`],
-                        ['email', email ?? ""],
-                        ['phone', phone ?? ""],
-                        ['orderStatusesChecked', JSON.stringify(orderStatusesChecked)],
-                        ['passwordChangedChecked', JSON.stringify(passwordChangedChecked)], 
-                        ['specialOffersChecked', JSON.stringify(specialOffersChecked)], 
-                        ['newsletterChecked', JSON.stringify(newsletterChecked)]
-                    ])
-                }}>
+                    saveChanges();
+                }} loading={saveLoading}>
                     Save changes
                 </Button>
             </View>

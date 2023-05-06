@@ -9,8 +9,8 @@ const styles = StyleSheet.create({
     },
 });
 
-export default UserAvatar = ({ style, size }) => {
-    const [avatarUri, setAvatarUri] = useState("");
+export default UserAvatar = ({ style, size, uri }) => {
+    const [avatarUri, setAvatarUri] = useState(uri);
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
     const getProfile = async () => {
@@ -20,12 +20,13 @@ export default UserAvatar = ({ style, size }) => {
         let splitName = name.split(' ');
         setFirstName(splitName.slice(0, 1).join(' '));
         setLastName(splitName.slice(1).join(' '));
+        console.log(profile[0][1]);
     }
     useEffect(getProfile, []);
     return <View style={style}>
         {
-            avatarUri !== undefined && avatarUri !== "" ?
-            <Avatar.Image source={{uri: avatarUri}} style={style}/>
+            avatarUri !== undefined && avatarUri !== "" && avatarUri !== null ?
+            <Avatar.Image source={{uri: avatarUri}} style={style} size={size}/>
             :
             <Avatar.Text 
                 label={`${firstName.charAt(0).toUpperCase()}${lastName.charAt(0).toUpperCase()}`} 
